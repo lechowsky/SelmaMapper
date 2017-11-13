@@ -25,7 +25,7 @@ public class GlobalMapperKey {
 	}
 
 	public boolean isMapper(Class<? extends Bean> beanClass, Class<? extends Dto> dtoClazz) {
-		return beanClass.equals(getBeanClazz()) && dtoClazz.equals(getDtoClazz());
+		return beanClass.equals(getBeanClazz()) && dtoClazz.equals(getDtoClazz()) || dtoClazz.equals(getBeanClazz()) && beanClass.equals(getDtoClazz()) ;
 		
 	}
 	
