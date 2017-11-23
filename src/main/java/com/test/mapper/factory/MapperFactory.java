@@ -18,10 +18,10 @@ public class MapperFactory {
 
 	private static Map<GlobalMapperKey, GlobalMapper> mapper = instance();
 
-	private static List<Class<?>> getMapper() {
+	private static <T> List<Class<?>> getMapper() {
 		List<Class<?>> mappersClazz = new ArrayList();
-		Class<? extends GlobalMapper> clazz = SimpleMapper.class;
-		Class<? extends GlobalMapper> clazzB = SecondSimpleMapper.class;
+		Class<? extends T> clazz = (Class<? extends T>) SimpleMapper.class;
+		Class<? extends T> clazzB = (Class<? extends T>) SecondSimpleMapper.class;
 		mappersClazz.add(clazzB);
 		mappersClazz.add(clazz);
 		return mappersClazz;
@@ -30,13 +30,24 @@ public class MapperFactory {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Map<GlobalMapperKey, GlobalMapper> instance() {
 		mapper = new HashMap<GlobalMapperKey, GlobalMapper>();
-		for (Class<?> mapper : getMapper()) {
+		for (Class<?> mapperClazz : MapperContext.getMappers()) {
 			GlobalMapperKey key = new GlobalMapperKey();
-			Class clazz = (Class) ((ParameterizedType) mapper.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+			System.out.println("Class : " + mapper);
+			Class clazz = (Class) ((ParameterizedType) mapperClazz.getGenericInterfaces()[0])
+					.getActualTypeArguments()[0];
 			key.setBeanClazz(clazz);
-			Class clazzb = (Class) ((ParameterizedType) mapper.getGenericInterfaces()[0]).getActualTypeArguments()[1];
+			Class clazzb = (Class) ((ParameterizedType) mapperClazz.getGenericInterfaces()[0])
+					.getActualTypeArguments()[1];
 			key.setDtoClazz(clazzb);
-			MapperFactory.mapper.put(key, (GlobalMapper) Selma.builder(mapper).build());
+			Class newInstance = mapperClazz.getClass();
+			try {
+				MapperFactory.mapper.put(key, ((GlobalMapper) Selma.builder(mapperClazz).build()));
+				// MapperFactory.mapper.put(key, ((GlobalMapper)newInstance.newInstance()));
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
 		}
 		return mapper;
 	}

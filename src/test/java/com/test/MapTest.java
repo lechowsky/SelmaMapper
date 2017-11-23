@@ -14,7 +14,6 @@ import com.test.dto.SimpleDto;
 import com.test.mapper.SimpleMapper;
 import com.test.mapper.factory.MapperFactory;
 
-import sun.java2d.pipe.SpanShapeRenderer.Simple;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
@@ -44,6 +43,7 @@ public class MapTest {
 		Assert.assertEquals(bean.getStringField(), result.getStringField());
 		Assert.assertEquals(bean.getId(), result.getId());
 	}
+	
 	@Test
 	public void anotherSimpleMapTest(){
 		AnotherSimpleBean bean = podamFactory.manufacturePojo(AnotherSimpleBean.class);	
